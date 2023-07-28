@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Function to replace azure_key in config.json with a placeholder
+replace_sensitive_key() {
+    # Placeholder text to replace sensitive keys
+    touch config-temp.json
+    cp config.json config-temp.json
+    PLACEHOLDER="[REDACTED]"
+
+    # Command to find and replace sensitive keys in the entire codebase
+    #find . -type f -name '*.json' -exec sed -i "s/azure_key/${PLACEHOLDER}/g" {} +
+
+    find . -type f -name 'config.json' -exec sed -i "s/azure_key/${PLACEHOLDER}/g" {} +
+    git add config.json
+}
+
+restore_sensitive_key() {
+    echo "restore_sensitive_key is called..."
+    cp config-temp.json config.json
+    rm config-temp.json
+}
+
+# Function to check for code formatting issues using a linter
+check_code_formatting() {
+  echo "Running code formatting checks..."
+  # Add your code formatting check command here
+  # Example: black --check .
+}
+
+# Function to run unit tests
+run_unit_tests() {
+  echo "Running unit tests..."
+  # Add your unit test command here
+  # Example: pytest
+}
+
+run_regex_check(){
+    SECRET_REGEX="azure_key|password|apikey|confidential"  # Add your custom regular expression here
+    # Use git diff to get the list of files to be committed
+    # Check if any of the files contain the secret regex pattern
+    if git diff --cached --name-only | xargs grep -E -i "$SECRET_REGEX"; then
+        echo "Error: You are trying to commit files with confidential information."
+        echo "Please remove or modify the confidential data before committing. sahil"
+        exit 1  # Exiting with non-zero status prevents the commit
+    fi
+}
+
+# Execute the checks
+replace_sensitive_key
+git commit -m "Temporary commit with sensitive_key replaced" --no-verify
+restore_sensitive_key
