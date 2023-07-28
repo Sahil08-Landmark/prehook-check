@@ -1,22 +1,23 @@
-name: Replace File Content
+name: Replace Content
 on:
   push:
     branches:
-      - main
+      - main  # Modify this branch name if needed
 
 jobs:
-  replace_files:
-    runs-on: windows
+  replace_content:
+    runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
-      - name: Replace the content in file
+
+      - name: Replace file content
         run: |
-          PLACEHOLDER="[REDACTED]"
-          find . -type f -name 'config.json' -exec sed -i "s/azure_key/${PLACEHOLDER}/g" {} + 
+          # Replace file1.txt content
+          sed -i 's/azure_key/sahil/g' config.json
       - name: Commit and push changes
         run: |
-          git config --local user.email "sahil.sharma@amantyatech.com"
           git config --local user.name "sahil0823"
-          git commit -am "Replace file content via GitHub Action"
+          git config --local user.email "sahil.sharma@amantyatech.com
+          git commit -am "Updated file content via GitHub Actions"
           git push
