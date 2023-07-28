@@ -14,6 +14,7 @@ jobs:
       - name: Replace file content
         run: |
           # Replace file1.txt content
+          echo "Replace content called"
           sed -i 's/azure_key/sahil/g' config.json
       - name: Commit and push changes
         run: |
