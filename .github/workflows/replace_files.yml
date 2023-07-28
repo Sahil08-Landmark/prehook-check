@@ -1,24 +1,21 @@
 name: Replace Content
-on:
-  push:
-    branches:
-      - main  # Modify this branch name if needed
+on: push
 
 jobs:
-  replace_content:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    replace_content:
+      runs-on: windows-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
 
-      - name: Replace file content
-        run: |
-          # Replace file1.txt content
-          echo "Replace content called"
-          sed -i 's/azure_key/sahil/g' config.json
-      - name: Commit and push changes
-        run: |
-          git config --local user.name "sahil0823"
-          git config --local user.email "sahil.sharma@amantyatech.com
-          git commit -am "Updated file content via GitHub Actions"
-          git push
+        - name: Replace file content
+          run: |
+            # Replace file1.txt content
+            echo "Replace content called"
+            sed -i 's/azure_key/sahil/g' config.json
+        - name: Commit and push changes
+          run: |
+            git config --local user.name "sahil0823"
+            git config --local user.email "sahil.sharma@amantyatech.com
+            git commit -am "Updated file content via GitHub Actions"
+            git push
