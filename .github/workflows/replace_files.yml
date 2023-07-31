@@ -19,4 +19,4 @@ jobs:
           git config --local user.name "sahil0823"
           git config --local user.email "sahil.sharma@amantyatech.com"
           git commit -am "Updated file content via GitHub Actions"
-          git push
+          git push https://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@github.com/sahil0823/prehook-check.git
