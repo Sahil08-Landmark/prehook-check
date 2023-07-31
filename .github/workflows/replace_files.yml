@@ -23,29 +23,21 @@ jobs:
           exit 1
         }
 
-    - name: Read replacements from replacements.json
-      id: read_replacements
-      run: |
-        $replacements = Get-Content "replacements.json" | ConvertFrom-Json
-        # $replacements | ConvertTo-Json | Out-File -FilePath replacements.json.env
-        # echo "REPLACEMENTS_ENV_PATH=$(pwd)/replacements.json.env" >> $GITHUB_ENV
-        echo "replacements=$replacements" >> $GITHUB_OUTPUT
-
     - name: Process Files
       run: |
+        # Retrieve the replacements JSON from the repository
+        $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
+
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
 
-          # Read the replacements from the output variable
-          $replacements = Get-Content $GITHUB_OUTPUT
-
-          # Process the file for each key-value pair in the replacements
-          foreach ($key in $replacements.Keys) {
-            echo "$key"
-            $value = $replacements[$key]
-            (Get-Content $_) -replace $key, $value | Set-Content $_
+          # Replace the placeholders with their corresponding values
+          $jsonContent.PSObject.Properties | ForEach-Object {
+            $placeholder = $_.Name
+            $value = $_.Value
+            $content = $content -replace $placeholder, $value
           }
 
           # (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
