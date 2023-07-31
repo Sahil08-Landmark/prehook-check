@@ -32,7 +32,7 @@ jobs:
             $splitIL = $_ -split ':'
             echo $splitIL[0]
             echo $splitIL[1]
-            (Get-Content $_) -replace $splitIL[1], $splitIL[0] | Set-Content $_
+            (Get-Content $loopfile) -replace $splitIL[1], $splitIL[0] | Set-Content $loopfile
           }
 
           # (Get-Content $loopfile) -replace 'azure_key121', 'placeholder' | Set-Content $loopfile
