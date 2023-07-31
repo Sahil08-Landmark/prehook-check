@@ -25,7 +25,7 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
 
           foreach ($key in $hashtable.Keys) {
-              cho "File Name: $_"
+              echo "File Name: $_"
               echo "inner loop" 
               $value = $hashtable[$key]
               echo "$key : $value"
