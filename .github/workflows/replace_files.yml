@@ -18,6 +18,7 @@ jobs:
       run: |
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-json
+        echo $jsonContent
         $hashtable = $jsonContent | ConvertFrom-json
 
         foreach ($key in $hashtable.Keys) {
