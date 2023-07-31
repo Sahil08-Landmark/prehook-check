@@ -18,7 +18,8 @@ jobs:
       run: |
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-json
-        echo "keys : $jsonContent.Keys"
+        $keys =  $jsonContent.Keys
+        echo "keys : $keys"
         foreach ($key in $jsonContent.Keys) {
           $value = $jsonContent[$key]
           echo "key : $key, value : $value"
