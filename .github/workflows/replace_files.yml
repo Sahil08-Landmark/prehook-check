@@ -9,12 +9,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-
-    - name: Delete files.txt before
-      run: |
-        # Use PowerShell command to delete the 'files.txt' file
-        Remove-Item -Path files.txt
-
     - name: List all files
       run: |
         # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
@@ -26,10 +20,12 @@ jobs:
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
-          (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
+          if ($_ -ne 'files.txt') {
+            Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
+          } 
         }
 
-    - name: Delete files.txt after
+    - name: Delete files.txt
       run: |
         # Use PowerShell command to delete the 'files.txt' file
         Remove-Item -Path files.txt
