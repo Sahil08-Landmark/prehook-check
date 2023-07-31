@@ -18,7 +18,7 @@ jobs:
       run: |
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
-        $hashtable = $jsonContent | ConvertFrom-StringData
+        $hashtable = $jsonContent | ConvertFrom-Json
 
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
@@ -30,7 +30,7 @@ jobs:
               $value = $hashtable[$key]
               echo "key : $key"
               echo "value : $value"
-              (Get-Content $_) -replace "$value", "$key" | Set-Content $_
+              # (Get-Content $_) -replace "$value", "$key" | Set-Content $_
           }
 
           # (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
