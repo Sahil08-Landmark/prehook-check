@@ -30,6 +30,8 @@ jobs:
           
           # Read the replacements from the output variable
           $replacements = $env:replacements
+          echo $replacements
+          echo $replacements.Keys
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
