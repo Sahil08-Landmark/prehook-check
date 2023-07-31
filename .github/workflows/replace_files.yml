@@ -11,9 +11,14 @@ jobs:
     - name: Read replacements from replacements.txt
       id: read_replacements
       run: |
-        # Use PowerShell command to read content from replacements.txt and store it in an output variable
-        $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
-        Write-Output "::set-output name=replacements::$replacements"
+        $replacements = @{}
+        Get-Content "replacements.txt" | ForEach-Object {
+          $parts = $_ -split ':', 2
+          $key = $parts[0].Trim()
+          $value = $parts[1].Trim()
+          $replacements[$key] = $value
+        }
+        Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
 
     - name: List all files
       run: |
@@ -27,13 +32,11 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
           
-          # Read the replacements from the output variable
-          $replacements = $env:replacements
-          echo $replacements
-          echo $replacements.Keys
+          # Read the replacements from the environment variable
+          $replacements = ConvertFrom-Json $env:REPLACEMENTS
+
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
-            echo $key
             $value = $replacements[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
@@ -43,7 +46,7 @@ jobs:
       run: |
         # Use PowerShell command to delete the 'files.txt' file
         Remove-Item -Path files.txt
-        
+
     - name: Commit and push changes
       run: |
         git config --local user.name "sahil0823"
