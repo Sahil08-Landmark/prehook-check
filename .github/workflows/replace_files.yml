@@ -21,7 +21,7 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
           if ($_ -ne 'files.txt') {
-            Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
+            (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
           } 
         }
 
