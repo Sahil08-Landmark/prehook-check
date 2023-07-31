@@ -4,9 +4,24 @@ on: push
 jobs:
   process_files:
     runs-on: windows-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Generate files.txt
+      run: |
+        # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
+        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml' | ForEach-Object { $_.FullName } > files.txt
+
+    - name: Check if 'files.txt' is generated
+      run: |
+        # Check if 'files.txt' exists and contains data
+        $content = Get-Content "files.txt"
+        if (-not $content) {
+          Write-Host "'files.txt' is empty or not generated properly."
+          exit 1
+        }
 
     - name: Read replacements from replacements.txt
       id: read_replacements
@@ -20,18 +35,13 @@ jobs:
         }
         Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
 
-    - name: List all files
-      run: |
-        # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
-        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.txt' | ForEach-Object { $_.FullName } > files.txt
-
     - name: Process Files
       run: |
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
-          
+
           # Read the replacements from the environment variable
           $replacements = ConvertFrom-Json $env:REPLACEMENTS
 
