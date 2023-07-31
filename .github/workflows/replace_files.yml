@@ -22,12 +22,12 @@ jobs:
           Write-Host "'files.txt' is empty or not generated properly."
           exit 1
         }
-        
+
     - name: Read replacements from replacements.json
       id: read_replacements
       run: |
         $replacements = Get-Content "replacements.json" | ConvertFrom-Json
-        Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
+        Write-Output "::set-output name=replacements::$replacements"
 
     - name: Process Files
       run: |
@@ -36,8 +36,8 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
 
-          # Read the replacements from the environment variable
-          $replacements = ConvertFrom-Json $env:REPLACEMENTS
+          # Read the replacements from the output variable
+          $replacements = $env:replacements
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
