@@ -9,6 +9,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: List all files
+      run: |
+        # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
+        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.txt' | ForEach-Object { $_.FullName } > files.txt
+
     - name: Read replacements from replacements.txt
       id: read_replacements
       run: |
@@ -20,11 +25,6 @@ jobs:
           $replacements[$key] = $value
         }
         Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
-
-    - name: List all files
-      run: |
-        # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
-        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.txt' | ForEach-Object { $_.FullName } > files.txt
 
     - name: Process Files
       run: |
