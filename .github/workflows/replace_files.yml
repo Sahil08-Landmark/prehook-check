@@ -19,8 +19,8 @@ jobs:
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
-          echo "File Name: $_"
           if ($_ -ne 'files.txt') {
+            echo "File Name: $_"
             (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
           } 
         }
