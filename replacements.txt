@@ -1,2 +1,2 @@
-placeholder:azure_key121
+placeholder:placeholder
 placeholder1:azure1234567
