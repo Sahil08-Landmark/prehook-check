@@ -12,9 +12,14 @@ jobs:
     - name: Read replacements from replacements.txt
       id: read_replacements
       run: |
-        # Use PowerShell command to read content from replacements.txt and store it in an environment variable
-        $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
-        $replacements.GetEnumerator() | ForEach-Object { $env:("REPLACEMENT_$($_.Key)" + "=" + $_.Value) } > $env:GITHUB_ENV
+        $replacements = @{}
+        Get-Content "replacements.txt" | ForEach-Object {
+          $parts = $_ -split ':', 2
+          $key = $parts[0].Trim()
+          $value = $parts[1].Trim()
+          $replacements[$key] = $value
+        }
+        Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
 
     - name: List all files
       run: |
