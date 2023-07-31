@@ -27,14 +27,11 @@ jobs:
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
-
-          foreach ($key in $jsonContent.Keys) {
-              echo "File Name: $_"
-              echo "inner loop" 
-              $value = $jsonContent[$key]
-              echo "key : $key"
-              echo "value : $value"
-              # (Get-Content $_) -replace "$value", "$key" | Set-Content $_
+          $loopfile = $_
+          $splitString | ForEach-Object {
+            $splitIL = $_ -split ':'
+            echo "$splitIL[0]"
+            echo "$splitIL[0]"
           }
 
           # (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
