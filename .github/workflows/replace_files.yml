@@ -35,6 +35,8 @@ jobs:
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $env:REPLACEMENT.Keys) {
+            echo "inner loop"
+            echo "$key"
             $value = $env:REPLACEMENT[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
