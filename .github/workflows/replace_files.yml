@@ -23,13 +23,13 @@ jobs:
         # Read the 'files.txt' file line by line and process each file
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
-          echo "File Name: $_"
-          echo "jsoncontent : $jsonContent"
 
           foreach ($key in $hashtable.Keys) {
+              cho "File Name: $_"
               echo "inner loop" 
               $value = $hashtable[$key]
-              (Get-Content $_) -replace $value, $key | Set-Content $_
+              echo "$key : $value"
+              (Get-Content $_) -replace "$value", "$key" | Set-Content $_
           }
 
           # (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
