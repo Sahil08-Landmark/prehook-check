@@ -33,11 +33,14 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
 
+          # Read the replacements from the environment variable
+          $replacements = ConvertFrom-Json $env:REPLACEMENTS
+
           # Process the file for each key-value pair in the replacements
-          foreach ($key in $env:REPLACEMENT.Keys) {
+          foreach ($key in $replacements.Keys) {
             echo "inner loop"
             echo "$key"
-            $value = $env:REPLACEMENT[$key]
+            $value = $replacements[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
         }
