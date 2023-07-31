@@ -12,8 +12,17 @@ jobs:
     - name: List all files
       run: |
         # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
-        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml' | ForEach-Object { $_.FullName } > files.txt
+        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.json' | ForEach-Object { $_.FullName } > files.txt
 
+    - name: Check if 'files.txt' is generated
+      run: |
+        # Check if 'files.txt' exists and contains data
+        $content = Get-Content "files.txt"
+        if (-not $content) {
+          Write-Host "'files.txt' is empty or not generated properly."
+          exit 1
+        }
+        
     - name: Read replacements from replacements.json
       id: read_replacements
       run: |
