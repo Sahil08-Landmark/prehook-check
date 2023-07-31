@@ -28,7 +28,8 @@ jobs:
               echo "File Name: $_"
               echo "inner loop" 
               $value = $hashtable[$key]
-              echo "ss $key : $value"
+              echo "key : $key"
+              echo "value : $value"
               (Get-Content $_) -replace "$value", "$key" | Set-Content $_
           }
 
