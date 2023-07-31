@@ -1,22 +1,29 @@
 name: Replace Content
 on: push
-
+          
 jobs:
-  replace_content:
+  process_files:
     runs-on: windows-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Replace file content
-        run: |
-          # Replace file1.txt content
-          echo "Replace content called"
-          sed -i 's/azure_key/sahil/g' config.json
+    - name: List all files
+      run: |
+        # Use 'find' command to list all files (excluding directories) and save the output to 'files.txt'
+        find . -type f > files.txt
 
-      - name: Commit and push changes
-        run: |
-          git config --local user.name "sahil0823"
-          git config --local user.email "sahil.sharma@amantyatech.com"
-          git commit -am "Updated file content via GitHub Actions"
-          git push https://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@github.com/sahil0823/prehook-check.git
+    - name: Process Files
+      run: |
+        # Read the 'files.txt' file line by line and process each file
+        while IFS= read -r file; do
+          # Do something with each file (e.g., echo its name and path)
+          echo "File Name: $file"
+        done < files.txt
+
+    - name: Delete files.txt
+      run: |
+        # Use 'rm' command to delete the 'files.txt' file
+        rm files.txt
+          
