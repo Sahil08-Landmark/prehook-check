@@ -27,8 +27,9 @@ jobs:
       id: read_replacements
       run: |
         $replacements = Get-Content "replacements.json" | ConvertFrom-Json
-        $replacements | ConvertTo-Json | Out-File -FilePath replacements.json.env
-        echo "REPLACEMENTS_ENV_PATH=$(pwd)/replacements.json.env" >> $GITHUB_ENV
+        # $replacements | ConvertTo-Json | Out-File -FilePath replacements.json.env
+        # echo "REPLACEMENTS_ENV_PATH=$(pwd)/replacements.json.env" >> $GITHUB_ENV
+        echo "replacements=$replacements" >> $GITHUB_OUTPUT
 
     - name: Process Files
       run: |
@@ -37,9 +38,8 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
 
-          # Read the replacements from the environment file
-          $env_file = Get-Content $env:REPLACEMENTS_ENV_PATH | ConvertFrom-Json
-          $replacements = Get-Content $env_file
+          # Read the replacements from the output variable
+          $replacements = Get-Content $GITHUB_OUTPUT
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
