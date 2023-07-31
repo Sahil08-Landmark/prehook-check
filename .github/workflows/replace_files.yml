@@ -20,9 +20,17 @@ jobs:
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
+          (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
         }
 
     - name: Delete files.txt
       run: |
         # Use PowerShell command to delete the 'files.txt' file
         Remove-Item -Path files.txt
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.name "sahil0823"
+        git config --local user.email "sahil.sharma@amantyatech.com"
+        git commit -am "Updated file content via GitHub Actions"
+        git push https://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@github.com/sahil0823/prehook-check.git
