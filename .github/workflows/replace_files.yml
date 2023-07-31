@@ -27,7 +27,7 @@ jobs:
       id: read_replacements
       run: |
         $replacements = Get-Content "replacements.json" | ConvertFrom-Json
-        Write-Output "::set-output name=replacements::$replacements"
+        echo "::set-output name=replacements::$replacements"
 
     - name: Process Files
       run: |
@@ -41,6 +41,7 @@ jobs:
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
+            echo "$key"
             $value = $replacements[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
