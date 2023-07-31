@@ -4,27 +4,21 @@ on: push
 jobs:
   process_files:
     runs-on: windows-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Read replacements from replacements.txt
+      id: read_replacements
+      run: |
+        # Use PowerShell command to read content from replacements.txt and store it in an output variable
+        $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
+        Write-Output "::set-output name=replacements::$replacements"
 
     - name: List all files
       run: |
         # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
         Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.txt' | ForEach-Object { $_.FullName } > files.txt
-
-    - name: Read replacements from replacements.txt
-      id: read_replacements
-      run: |
-        $replacements = @{}
-        Get-Content "replacements.txt" | ForEach-Object {
-          $parts = $_ -split ':', 2
-          $key = $parts[0].Trim()
-          $value = $parts[1].Trim()
-          $replacements[$key] = $value
-        }
-        Write-Host "REPLACEMENTS=$(ConvertTo-Json $replacements)" >> $GITHUB_ENV
 
     - name: Process Files
       run: |
@@ -32,12 +26,14 @@ jobs:
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
-
-          # Read the replacements from the environment variable
-          $replacements = ConvertFrom-Json $env:REPLACEMENTS
-
+          
+          # Read the replacements from the output variable
+          $replacements = $env:replacements
+          echo $replacements
+          echo $replacements.Keys
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
+            echo $key
             $value = $replacements[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
@@ -47,7 +43,7 @@ jobs:
       run: |
         # Use PowerShell command to delete the 'files.txt' file
         Remove-Item -Path files.txt
-
+        
     - name: Commit and push changes
       run: |
         git config --local user.name "sahil0823"
