@@ -20,8 +20,8 @@ jobs:
         $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
         # $hashtable = $jsonContent | ConvertFrom-Json
           $jsonContent | ForEach-Object {
-            $key = $_.Key
-            $value = $_.Value
+            key = $_.Key
+            value = $_.Value
             echo "key : $key"
             echo "value : $value"
           }
