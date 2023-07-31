@@ -18,7 +18,7 @@ jobs:
         run: |
           # Retrieve the replacements JSON from the repository
           $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
-
+          echo "$jsonContent"
           # Loop through each file in the repository (excluding the "replacements.json" file)
           $files = Get-ChildItem -Recurse | Where-Object { $_.Name -ne "replacements.json" }
           foreach ($file in $files) {
