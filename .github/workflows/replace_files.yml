@@ -14,7 +14,7 @@ jobs:
       run: |
         # Use PowerShell command to read content from replacements.txt and store it in an output variable
         $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
-        Write-Output "::set-output name=replacements::$replacements"
+        Write-Output "::set-output name:replacements::$replacements"
 
     - name: List all files
       run: |
