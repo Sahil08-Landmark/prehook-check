@@ -19,7 +19,8 @@ jobs:
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.txt
         $splitString = $jsonContent -split "`n"
-        $splitString | ForEach-Object {
+        $splitStringWithoutNewline = $splitString | ForEach-Object { $_ -replace "`n", '' }
+        $splitStringWithoutNewline | ForEach-Object {
           echo "check : $_"
         }
           
@@ -28,7 +29,7 @@ jobs:
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           $loopfile = $_
-          $splitString | ForEach-Object {
+          $splitStringWithoutNewline | ForEach-Object {
             $splitIL = $_ -split ':'
             echo "file : $loopfile"
             echo $splitIL[0]
