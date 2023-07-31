@@ -30,6 +30,7 @@ jobs:
           $loopfile = $_
           $splitString | ForEach-Object {
             $splitIL = $_ -split ':'
+            echo "file : $loopfile"
             echo $splitIL[0]
             echo $splitIL[1]
             (Get-Content $loopfile) -replace $splitIL[1], $splitIL[0] | Set-Content $loopfile
