@@ -21,7 +21,8 @@ jobs:
         $splitString = $jsonContent -split ","
         $splitStringWithoutNewline = $splitString | ForEach-Object { $_ -replace "`n", '' }
         $splitStringWithoutNewline | ForEach-Object {
-          echo "check : $_"
+          $ss = $_ -replace "`n", ''
+          echo "check : $ss"
         }
           
 
