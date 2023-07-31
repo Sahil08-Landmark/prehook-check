@@ -17,7 +17,7 @@ jobs:
     - name: Process Files
       run: |
         # Retrieve the replacements JSON from the repository
-        $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-StringData
+        $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-json
         $hashtable = $jsonContent | ConvertFrom-json
 
         foreach ($key in $hashtable.Keys) {
