@@ -28,6 +28,7 @@ jobs:
       run: |
         $replacements = Get-Content "replacements.json" | ConvertFrom-Json
         echo "::set-output name=replacements::$replacements"
+        echo $env:replacements
 
     - name: Process Files
       run: |
