@@ -6,59 +6,39 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: List all files
-      run: |
-        # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
-        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.json', 'replacements.json.env' | ForEach-Object { $_.FullName } > files.txt
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
 
-    - name: Check if 'files.txt' is generated
-      run: |
-        # Check if 'files.txt' exists and contains data
-        $content = Get-Content "files.txt"
-        if (-not $content) {
-          Write-Host "'files.txt' is empty or not generated properly."
-          exit 1
-        }
+      - name: Replace keys in files
+        run: |
+          # Retrieve the replacements JSON from the repository
+          $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
 
-    - name: Process Files
-      run: |
-        # Retrieve the replacements JSON from the repository
-        $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
+          # Loop through each file in the repository (excluding the "replacements.json" file)
+          $files = Get-ChildItem -Recurse | Where-Object { $_.Name -ne "replacements.json" }
+          foreach ($file in $files) {
+            # Read the content of the file
+            $content = Get-Content -Raw -Path $file.FullName
 
-        # Read the 'files.txt' file line by line and process each file
-        Get-Content files.txt | ForEach-Object {
-          # Do something with each file (e.g., echo its name and path)
-          echo "File Name: $_"
+            # Replace the placeholders with their corresponding values
+            $jsonContent.PSObject.Properties | ForEach-Object {
+              $placeholder = $_.Name
+              $value = $_.Value
+              $content = $content -replace $placeholder, $value
+            }
 
-          # Replace the placeholders with their corresponding values
-          $jsonContent.PSObject.Properties | ForEach-Object {
-            $placeholder = $_.Name
-            $value = $_.Value
-            #$content = $content -replace $placeholder, $value
-            (Get-Content $_) -replace $placeholder, $value | Set-Content $_
+            # Overwrite the file with the updated content
+            $content | Set-Content -Path $file.FullName
           }
 
-          # # Process the file for each key-value pair in the replacements
-          # foreach ($key in $replacements.Keys) {
-          #   echo "$key"
-          #   $value = $replacements[$key]
-          #   (Get-Content $_) -replace $key, $value | Set-Content $_
-          # }
-
-          # (Get-Content $_) -replace 'azure_key121', 'placeholder' | Set-Content $_
-        }
-
-    - name: Delete files.txt
-      run: |
-        # Use PowerShell command to delete the 'files.txt' file
-        Remove-Item -Path files.txt
-
-    - name: Commit and push changes
-      run: |
-        git config --local user.name "sahil0823"
-        git config --local user.email "sahil.sharma@amantyatech.com"
-        git commit -am "Updated file content via GitHub Actions"
-        git push https://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@github.com/sahil0823/prehook-check.git
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "sahil0823"
+          git config --local user.email "sahil.sharma@amantyatech.com"
+          git commit -am "Updated file content via GitHub Actions"
+          git push https://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@github.com/sahil0823/prehook-check.git
