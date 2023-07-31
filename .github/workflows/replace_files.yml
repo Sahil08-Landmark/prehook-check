@@ -19,7 +19,7 @@ jobs:
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.json | ConvertFrom-Json
         # $hashtable = $jsonContent | ConvertFrom-Json
-          $jsonContent.GetEnumerator() | ForEach-Object {
+          $jsonContent | ForEach-Object {
             $key = $_.Key
             $value = $_.Value
             echo "key : $key"
