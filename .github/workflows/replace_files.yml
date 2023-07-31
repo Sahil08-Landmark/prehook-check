@@ -12,10 +12,9 @@ jobs:
     - name: Read replacements from replacements.txt
       id: read_replacements
       run: |
-        # Use PowerShell command to read content from replacements.txt and store it in an output variable
-        $replacements = Get-Content "replacements.txt" | ForEach-Object { $_ -split ':' } | ForEach-Object { $_.Trim() }
-        $replacements = @{ $replacements[0] = $replacements[1] }
-        Write-Output "::set-output name=replacements::$replacements"
+        # Use PowerShell command to read content from replacements.txt and store it in an environment variable
+        $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
+        $replacements.GetEnumerator() | ForEach-Object { $env:("REPLACEMENT_$($_.Key)" + "=" + $_.Value) } > $env:GITHUB_ENV
 
     - name: List all files
       run: |
@@ -28,18 +27,10 @@ jobs:
         Get-Content files.txt | ForEach-Object {
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
-          
-          # Read the replacements from the output variable
-          $replacements = $env:replacements
-          echo "$replacements"
-          echo "$replacements.Keys"
-          echo "sahil"
 
           # Process the file for each key-value pair in the replacements
-          foreach ($key in $replacements.Keys) {
-            echo "inner loop"
-            echo "$key"
-            $value = $replacements[$key]
+          foreach ($key in $env:REPLACEMENT.Keys) {
+            $value = $env:REPLACEMENT[$key]
             (Get-Content $_) -replace $key, $value | Set-Content $_
           }
         }
