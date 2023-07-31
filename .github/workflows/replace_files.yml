@@ -12,7 +12,7 @@ jobs:
     - name: List all files
       run: |
         # Use PowerShell command to list all files (excluding directories) and save the output to 'files.txt'
-        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.json' | ForEach-Object { $_.FullName } > files.txt
+        Get-ChildItem -File -Recurse -Exclude 'files.txt', '*.yml', 'replacements.json', 'replacements.json.env' | ForEach-Object { $_.FullName } > files.txt
 
     - name: Check if 'files.txt' is generated
       run: |
@@ -27,8 +27,8 @@ jobs:
       id: read_replacements
       run: |
         $replacements = Get-Content "replacements.json" | ConvertFrom-Json
-        echo "::set-output name=replacements::$replacements"
-        echo $env:replacements
+        $replacements | ConvertTo-Json | Out-File -FilePath replacements.json.env
+        echo "REPLACEMENTS_ENV_PATH=$(pwd)/replacements.json.env" >> $GITHUB_ENV
 
     - name: Process Files
       run: |
@@ -37,8 +37,9 @@ jobs:
           # Do something with each file (e.g., echo its name and path)
           echo "File Name: $_"
 
-          # Read the replacements from the output variable
-          $replacements = $env:replacements
+          # Read the replacements from the environment file
+          $env_file = Get-Content $env:REPLACEMENTS_ENV_PATH | ConvertFrom-Json
+          $replacements = Get-Content $env_file
 
           # Process the file for each key-value pair in the replacements
           foreach ($key in $replacements.Keys) {
