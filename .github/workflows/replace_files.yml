@@ -18,7 +18,8 @@ jobs:
       run: |
         # Retrieve the replacements JSON from the repository
         $jsonContent = Get-Content -Raw -Path replacements.txt
-        $jsonContent | ForEach-Object {
+        $splitString = $jsonContent -split ','
+        $splitString | ForEach-Object {
           echo "check : $_"
         }
           
