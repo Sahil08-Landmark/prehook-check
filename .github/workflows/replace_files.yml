@@ -13,7 +13,8 @@ jobs:
       id: read_replacements
       run: |
         # Use PowerShell command to read content from replacements.txt and store it in an output variable
-        $replacements = Get-Content "replacements.txt" | ConvertFrom-StringData
+        $replacements = Get-Content "replacements.txt" | ForEach-Object { $_ -split ':' } | ForEach-Object { $_.Trim() }
+        $replacements = @{ $replacements[0] = $replacements[1] }
         Write-Output "::set-output name=replacements::$replacements"
 
     - name: List all files
