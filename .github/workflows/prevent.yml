@@ -1,0 +1,24 @@
+name: Prevent Commits
+on: push
+          
+jobs:
+  process_files:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Check for Azure Key
+      run: |
+        # Search for the string "azure_key121" in all files
+        findstr /S "azure_key121" *.*
+        if %errorlevel% equ 0 (
+            echo Found "azure_key121" in one or more files. Commit will not be successful.
+            exit 1
+        ) else (
+            echo No occurrence of "azure_key121" found. Commit is allowed.
+        )
+
+
+    
