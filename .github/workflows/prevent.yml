@@ -13,10 +13,11 @@ jobs:
       run: |
         # Search for the string "azure_key121" in all files
         findstr /S "azure_key121" *.*
-        if %errorlevel% equ 0 (
+        if %errorlevel% == 0 (
             echo Found "azure_key121" in one or more files. Commit will not be successful.
             exit 1
-        ) else (
+        ) 
+        else (
             echo No occurrence of "azure_key121" found. Commit is allowed.
         )
 
